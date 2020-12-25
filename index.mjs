@@ -17,7 +17,7 @@ app.use(express.static('public'));
 app.use(methodOverride('_method'));
 
 // set the routes
-routes( app );
+routes(app);
 
 const PORT = process.env.PORT || 3004;
 
