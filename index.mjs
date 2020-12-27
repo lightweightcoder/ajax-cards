@@ -10,7 +10,11 @@ app.use(cookieParser());
 
 app.set('view engine', 'ejs');
 
+// This is takes input from HTML forms and puts it in req.body
 app.use(express.urlencoded({ extended: false }));
+
+// This takes from what axios sends and puts into req.body
+app.use(express.json());
 
 app.use(express.static('public'));
 
