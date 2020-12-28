@@ -168,20 +168,30 @@ export default function games(db) {
   };
 
   // get game data based on logged in user
-  // const getGameData = async (request, response) => {
-  //   const userId = request.user.Id;
+  const show = async (request, response) => {
+    try {
+      console.log('user is:', request.user);
+      // const userId = request.user.Id;
 
-  //   db.GamesUser.findAll({
-  //     where: {
-  //       UserId: userId,
-  //     },
-  //     include: {
-  //       model: db.Game,
-  //     },
-  //   })
-  //     .then((gamesUsers) => console.log(gamesUsers[0]))
-  //     .catch((error) => console.log(error));
-  // };
+      // db.GamesUser.findAll({
+      //   where: {
+      //     UserId: userId,
+      //   },
+      //   include: {
+      //     model: db.Game,
+      //   },
+      // });
+
+      const data = {};
+
+      // set the user's Id for use in displayUserData in script.js
+      data.userId = request.user.id;
+
+      response.send(data);
+    } catch (error) {
+      response.status(500).send(error);
+    }
+  };
 
   // return all functions we define in an object
   // refer to the routes file above to see this used
@@ -189,5 +199,6 @@ export default function games(db) {
     deal,
     create,
     index,
+    show,
   };
 }

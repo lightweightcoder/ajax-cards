@@ -14,11 +14,17 @@
  * ==========================================================================
  * ==========================================================================
  */
-// show the login and registration modal
-const modal = document.getElementById('modal');
-modal.classList.add('show-modal');
 
-// get and create the elements for the login and register form
+// get the login and registration form modal
+const modal = document.getElementById('modal');
+// modal.classList.add('show-modal');
+
+const showLoginAndRegForm = () => {
+  // show the login and registration modal
+  modal.classList.add('show-modal');
+};
+
+// get and create the elements for the login and register form ----------------------
 const loginBtn = document.getElementById('login-btn');
 const registerBtn = document.getElementById('register-btn');
 const emailInput = document.getElementById('email');
@@ -26,11 +32,91 @@ const passwordInput = document.getElementById('password');
 const invalidMsgDiv = document.getElementById('invalid-message');
 const invalidMsgEl = document.createElement('p');
 
-// get and create elements for displaying user data and logout btn
+// get and create elements for displaying user data and logout btn ------------------
 const sessionCol = document.getElementById('session-col');
 const welcomeMsgEl = document.createElement('span');
 const logoutBtn = document.createElement('button');
 
+// game container manipulation elements --------------------------------------------
+// global value that holds info about the current hand.
+let currentGame = null;
+
+// create game btn
+const createGameBtn = document.createElement('button');
+
+// Functions ========================================================================
+// game container manipulation functions --------------------------------------------
+// DOM manipulation function that displays the player's current hand.
+const runGame = function ({ cards }) {
+  // manipulate DOM
+  const gameContainer = document.querySelector('#game-container');
+
+  gameContainer.innerText = `
+    Your Hand:
+    ====
+    ${cards.playerHand[0].name}
+    of
+    ${cards.playerHand[0].suit}
+    ====
+    ${cards.playerHand[1].name}
+    of
+    ${cards.playerHand[1].suit}
+  `;
+};
+
+// make a request to the server
+// to change the deck. set 2 new cards into the player hand.
+const dealCards = function () {
+  axios.put(`/games/${currentGame.id}/deal`)
+    .then((response) => {
+      // get the updated hand value
+      currentGame = response.data;
+
+      // display it to the user
+      runGame(currentGame);
+    })
+    .catch((error) => {
+      // handle error
+      console.log(error);
+    });
+};
+
+const createGame = function () {
+  // Make a request to create a new game
+  axios.post('/games')
+    .then((response) => {
+      // set the global value to the new game.
+      currentGame = response.data;
+
+      console.log(currentGame);
+
+      // display it out to the user
+      runGame(currentGame);
+
+      // for this current game, create a button that will allow the user to
+      // manipulate the deck that is on the DB.
+      // Create a button for it.
+      const dealBtn = document.createElement('button');
+      dealBtn.addEventListener('click', dealCards);
+
+      // display the button
+      dealBtn.innerText = 'Deal';
+      document.body.appendChild(dealBtn);
+    })
+    .catch((error) => {
+      // handle error
+      console.log(error);
+    });
+};
+
+const initCreateGameBtn = () => {
+  // manipulate DOM, set up create game button
+  createGameBtn.addEventListener('click', createGame);
+  createGameBtn.innerText = 'Create Game';
+  document.body.appendChild(createGameBtn);
+};
+
+// logout and display user info functions -----------------------------------
 // handler to log a user out
 const handleLogoutBtnClick = async () => {
   try {
@@ -61,6 +147,7 @@ const displayUserData = (data) => {
   sessionCol.append(welcomeMsgEl, logoutBtn);
 };
 
+// login and register form functions ---------------------------------------
 // handler to make a request to the server to login a user
 const handleLoginBtnClick = async () => {
   const email = emailInput.value;
@@ -86,6 +173,8 @@ const handleLoginBtnClick = async () => {
       const userData = userInfo.data;
 
       displayUserData(userData);
+
+      initCreateGameBtn();
 
       // remove modal display
       modal.classList.remove('show-modal');
@@ -127,3 +216,36 @@ loginBtn.addEventListener('click', handleLoginBtnClick);
 
 // setup register button
 registerBtn.addEventListener('click', handleRegisterBtnClick);
+
+// game initalisation ======================================================
+const initGame = () => {
+  // when /views/games/index.ejs loads, check if user is logged in and is a user in the database and find an ongoing game
+  axios.get('/games')
+    .then((res) => {
+      // if response is auth failed, then build login form
+      // if response is found game data, check if there is an ongoing game
+      // if there is ongoing game, display ongoing game
+      // if there is no ongoing game, display create game button
+      const userGameData = res.data;
+
+      if (userGameData === 'auth failed') {
+        console.log('showLogin');
+        showLoginAndRegForm();
+      } else {
+        console.log('display user sess info');
+        const userData = {};
+        userData.id = userGameData.userId;
+        displayUserData(userData);
+
+        console.log('initCreateGameBtn');
+        initCreateGameBtn();
+      }
+    })
+    .catch((error) => {
+    // handle error
+      console.log(error);
+    });
+};
+
+// initialise game
+initGame();

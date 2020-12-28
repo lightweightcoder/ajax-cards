@@ -16,6 +16,9 @@ export default function routes(app) {
   // main page
   app.get('/', GamesController.index);
 
+  // check if user is logged in and is in the database and find an existing game
+  app.get('/games', checkAuth, GamesController.show);
+
   // log a user in
   app.post('/login', UsersController.login);
 
@@ -24,9 +27,6 @@ export default function routes(app) {
 
   // logout a user
   app.delete('/logout', UsersController.logout);
-
-  // create a new game
-  // app.get('/games', checkAuth, GamesController.findAll);
 
   // create a new game
   app.post('/games', checkAuth, GamesController.create);
