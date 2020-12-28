@@ -1,3 +1,19 @@
+/* eslint-disable max-len */
+/** pseudo-code
+ * 1. On page load, use cookies and query database (using user controller) to check if user is logged in (axios.get('/check')).
+ *  1.1 If user is not logged in, create elements to display login form
+ *  1.2 If user is logged in, query database for games that belong to that user (using games controller? need any includes bcos need games and gamesUser models?). Check for a game that has no winner yet. (do I do this checking in the controller or client side js?)
+ * await axios.get('/game')
+ *    1.2.1 If user has a game that has no winner yet, display the score, the previous round's hand, the deal btn, and refresh btn (refresh btn is a axios.get of the main page?).
+ *    1.2.2 If user has no game that has no winner, display the start game btn.
+ */
+
+/**
+ * ==========================================================================
+ * ==========================================================================
+ * ==========================================================================
+ * ==========================================================================
+ */
 // show the login and registration modal
 const modal = document.getElementById('modal');
 modal.classList.add('show-modal');

@@ -167,6 +167,22 @@ export default function games(db) {
     }
   };
 
+  // get game data based on logged in user
+  // const getGameData = async (request, response) => {
+  //   const userId = request.user.Id;
+
+  //   db.GamesUser.findAll({
+  //     where: {
+  //       UserId: userId,
+  //     },
+  //     include: {
+  //       model: db.Game,
+  //     },
+  //   })
+  //     .then((gamesUsers) => console.log(gamesUsers[0]))
+  //     .catch((error) => console.log(error));
+  // };
+
   // return all functions we define in an object
   // refer to the routes file above to see this used
   return {

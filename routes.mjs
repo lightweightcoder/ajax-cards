@@ -4,10 +4,14 @@ import db from './models/index.mjs';
 import games from './controllers/games.mjs';
 import users from './controllers/users.mjs';
 
+// import checkAuth middleware
+import checkAuthMiddleware from './lib/check-auth.mjs';
+
 export default function routes(app) {
   // pass in db for all callbacks in controllers
   const GamesController = games(db);
   const UsersController = users(db);
+  const checkAuth = checkAuthMiddleware(db);
 
   // main page
   app.get('/', GamesController.index);
@@ -22,7 +26,10 @@ export default function routes(app) {
   app.delete('/logout', UsersController.logout);
 
   // create a new game
-  app.post('/games', GamesController.create);
+  // app.get('/games', checkAuth, GamesController.findAll);
+
+  // create a new game
+  app.post('/games', checkAuth, GamesController.create);
 
   // update a game with new cards
   app.put('/games/:id/deal', GamesController.deal);
