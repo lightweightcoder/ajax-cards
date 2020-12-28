@@ -69,10 +69,10 @@ module.exports = {
       },
       score: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       isWinner: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false,
       },
     });
   },
