@@ -20,6 +20,8 @@ db.GamesUser = gamesUserModel(sequelize, Sequelize.DataTypes);
 
 db.Game.belongsToMany(db.User, { through: db.GamesUser });
 db.User.belongsToMany(db.Game, { through: db.GamesUser });
+// db.User.hasMany(db.Game, { as: winner });
+// db.Game.belongsTo(db.User, { foreignKey: 'WinnerId' });
 
 // Define 1-M associations between GamesUsers table and associated tables
 // to access GamesUser attributes from Game and User instances

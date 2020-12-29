@@ -36,6 +36,13 @@ module.exports = {
         // allow us to keep non-relational data for the cards
         type: Sequelize.JSON,
       },
+      WinnerId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'id',
+        },
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -70,9 +77,6 @@ module.exports = {
       score: {
         type: Sequelize.INTEGER,
         defaultValue: 0,
-      },
-      isWinner: {
-        type: Sequelize.BOOLEAN,
       },
     });
   },
