@@ -132,8 +132,8 @@ const createGame = function () {
 
       console.log(currentGame);
 
-      // display it out to the user
-      runGame(currentGame);
+      // // display it out to the user
+      // runGame(currentGame);
 
       // for this current game, create a button that will allow the user to
       // manipulate the deck that is on the DB.
@@ -144,6 +144,15 @@ const createGame = function () {
       // display the button
       dealBtn.innerText = 'Deal';
       document.body.appendChild(dealBtn);
+
+      // display the players id in each card div
+      const loggedInPlayerNameEl = document.createElement('p');
+      loggedInPlayerNameEl.innerHTML = currentGame.loggedInUserId;
+      player1CardsDiv.append(loggedInPlayerNameEl);
+
+      const randomUserNameEl = document.createElement('p');
+      randomUserNameEl.innerHTML = currentGame.randomUserId;
+      player2CardsDiv.append(randomUserNameEl);
     })
     .catch((error) => {
       // handle error
@@ -155,7 +164,7 @@ const initCreateGameBtn = () => {
   // manipulate DOM, set up create game button
   createGameBtn.addEventListener('click', createGame);
   createGameBtn.innerText = 'Create Game';
-  document.body.appendChild(createGameBtn);
+  gameBtnsCol.appendChild(createGameBtn);
 };
 
 // logout and display user info functions -----------------------------------

@@ -1,12 +1,9 @@
 export default function gamesUserModel(sequelize, DataTypes) {
   return sequelize.define(
-    'gamesUser',
+    'GamesUser',
     {
       score: {
         type: DataTypes.INTEGER,
-      },
-      isWinner: {
-        type: DataTypes.BOOLEAN,
       },
     },
     {

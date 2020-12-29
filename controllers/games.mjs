@@ -1,3 +1,7 @@
+import pkg from 'sequelize';
+
+const { Op } = pkg;
+
 /*
  * ========================================================
  * ========================================================
@@ -112,26 +116,63 @@ export default function games(db) {
     // deal out a new shuffled deck for this game.
     const deck = shuffleCards(makeDeck());
 
-    const newGame = {
-      cards: {
-        playerHand: [deck.pop(), deck.pop()],
-        deck,
-      },
-    };
-
     try {
-      // run the DB INSERT query
+      // get the logged in user id
+      const loggedInUserId = request.user.id;
+
+      // find all players who are not the logged in user in the database
+      // returns array of user objects
+      const users = await db.User.findAll({
+        where: {
+          id: {
+            [Op.ne]: loggedInUserId,
+          },
+        },
+      });
+
+      // get a random user's id to be the 2nd player
+      const randomIndex = Math.floor((Math.random() * users.length));
+      const randomUserId = users[randomIndex].id;
+
+      // set players ids for new game
+      // const playersIds = [loggedInUserId, randomUserId];
+
+      const newGame = {
+        cards: {
+          // playerHand: [deck.pop(), deck.pop()],
+          deck,
+        },
+      };
+
+      // run the DB INSERT query to create a new game
       const game = await db.Game.create(newGame);
+
+      const gamesUsersData = [];
+
+      // add the loggedInUser's data for GameUsers table
+      gamesUsersData.push({
+        GameId: game.id,
+        UserId: loggedInUserId,
+      });
+
+      // add the random users's data for GameUsers table
+      gamesUsersData.push({
+        GameId: game.id,
+        UserId: randomUserId,
+      });
+
+      // create entries in the GamesUsers table
+      await db.GamesUser.bulkCreate(gamesUsersData);
 
       // send the new game back to the user.
       // dont include the deck so the user can't cheat
       response.send({
         id: game.id,
-        cards: {
-          playerHand: game.cards.playerHand,
-        },
+        randomUserId,
+        loggedInUserId,
       });
     } catch (error) {
+      console.log('error is', error);
       response.status(500).send(error);
     }
   };
