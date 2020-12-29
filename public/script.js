@@ -232,10 +232,12 @@ const handleRegisterBtnClick = async () => {
   try {
     const userInfo = await axios.post('/register', data);
 
-    // display logged in user info
-    const userData = userInfo.data;
+    console.log('userinfo', userInfo);
 
-    displayUserData(userData);
+    // display logged in user info
+    // const userData = userInfo.data;
+
+    // displayUserData(userData);
 
     // remove modal display
     modal.classList.remove('show-modal');

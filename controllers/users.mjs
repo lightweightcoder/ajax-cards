@@ -1,4 +1,7 @@
+import pkg from 'sequelize';
 import getHash from '../lib/get-hash.mjs';
+
+const { UniqueConstraintError, ValidationError, DatabaseError } = pkg;
 
 export default function users(db) {
   const login = async (req, res) => {
@@ -54,7 +57,24 @@ export default function users(db) {
 
       res.send(user);
     } catch (error) {
-      console.log(error);
+      if (error instanceof UniqueConstraintError) {
+        console.log('SORRY UNIQUE ERROR');
+        console.log(error);
+        res.status(500).send(error);
+      } else if (error instanceof ValidationError) {
+        console.log('SORRY VALIDATION ERROR');
+
+        console.log(error);
+        console.log('THIS IS WHAT HAPPENED:');
+        console.log(error.errors[0].message);
+      } else if (error instanceof DatabaseError) {
+        console.log('SORRY DB ERROR');
+
+        console.log(error);
+      }
+      else {
+        console.log(error);
+      }
     }
   };
 

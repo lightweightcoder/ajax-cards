@@ -7,7 +7,6 @@ export default function userModel(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
     },
     email: {
-      unique: true,
       type: DataTypes.STRING,
     },
     password: {
