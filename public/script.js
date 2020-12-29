@@ -19,11 +19,6 @@
 const modal = document.getElementById('modal');
 // modal.classList.add('show-modal');
 
-const showLoginAndRegForm = () => {
-  // show the login and registration modal
-  modal.classList.add('show-modal');
-};
-
 // get and create the elements for the login and register form ----------------------
 const loginBtn = document.getElementById('login-btn');
 const registerBtn = document.getElementById('register-btn');
@@ -44,7 +39,46 @@ let currentGame = null;
 // create game btn
 const createGameBtn = document.createElement('button');
 
+// container to display game buttons
+const gameBtnsCol = document.getElementById('game-buttons-col');
+
+// game display header container
+const gameDisplayHeaderCol = document.getElementById('game-display-header');
+
+// players cards container
+const player1CardsDiv = document.getElementById('player1-cards-div');
+const player2CardsDiv = document.getElementById('player2-cards-div');
+
 // Functions ========================================================================
+const clearWebpage = () => {
+  // remove the login and registration modal
+  modal.classList.remove('show-modal');
+
+  // clear login and reg form inputs
+  emailInput.innerHTML = '';
+  passwordInput.innerHTML = '';
+  invalidMsgDiv.innerHTML = '';
+
+  // clear user session info
+  sessionCol.innerHTML = '';
+
+  // remove game buttons
+  gameBtnsCol.innerHTML = '';
+
+  // remove game display header
+  gameDisplayHeaderCol.innerHTML = '';
+
+  // remove players cards
+  player1CardsDiv.innerHTML = '';
+  player2CardsDiv.innerHTML = '';
+};
+
+// show login and registration form -------------------------------------------------
+const showLoginAndRegForm = () => {
+  // show the login and registration modal
+  modal.classList.add('show-modal');
+};
+
 // game container manipulation functions --------------------------------------------
 // DOM manipulation function that displays the player's current hand.
 const runGame = function ({ cards }) {
