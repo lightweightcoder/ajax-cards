@@ -51,12 +51,13 @@ const player2CardsDiv = document.getElementById('player2-cards-div');
 
 // Functions ========================================================================
 const clearWebpage = () => {
+  console.log('clearing webpage');
   // remove the login and registration modal
   modal.classList.remove('show-modal');
 
   // clear login and reg form inputs
-  emailInput.innerHTML = '';
-  passwordInput.innerHTML = '';
+  emailInput.value = '';
+  passwordInput.value = '';
   invalidMsgDiv.innerHTML = '';
 
   // clear user session info
@@ -77,6 +78,13 @@ const clearWebpage = () => {
 const showLoginAndRegForm = () => {
   // show the login and registration modal
   modal.classList.add('show-modal');
+};
+
+// invalid messages for form
+const createAndShowFormInvalidMsg = (message) => {
+  invalidMsgEl.innerText = message;
+  invalidMsgEl.style.color = 'red';
+  invalidMsgDiv.append(invalidMsgEl);
 };
 
 // game container manipulation functions --------------------------------------------
@@ -156,13 +164,11 @@ const handleLogoutBtnClick = async () => {
   try {
     await axios.delete('/logout');
 
-    modal.classList.add('show-modal');
-
     // remove elements
-    sessionCol.remove(welcomeMsgEl, logoutBtn);
-    invalidMsgDiv.remove(invalidMsgEl);
-    emailInput.value = '';
-    passwordInput.value = '';
+    clearWebpage();
+
+    // show login and register form
+    showLoginAndRegForm();
   } catch (error) {
     // handle error
     console.log(error);
@@ -196,11 +202,8 @@ const handleLoginBtnClick = async () => {
     const userInfo = await axios.post('/login', data);
 
     if (userInfo.data === 'no user') {
-      // display invalid login msgs
-      invalidMsgEl.innerText = 'You have entered an wrong email/password';
-      invalidMsgEl.style.color = 'red';
-
-      invalidMsgDiv.append(invalidMsgEl);
+      // display invalid login msg
+      createAndShowFormInvalidMsg('You have entered an wrong email/password');
     } else {
       console.log('found user');
       // display logged in user info
@@ -235,15 +238,25 @@ const handleRegisterBtnClick = async () => {
     console.log('userinfo', userInfo);
 
     // display logged in user info
-    // const userData = userInfo.data;
+    const userData = userInfo.data;
 
-    // displayUserData(userData);
+    displayUserData(userData);
 
     // remove modal display
     modal.classList.remove('show-modal');
   } catch (error) {
     // handle error
+    console.log('oh no error');
     console.log(error);
+
+    // clear the dynamic contents of the webpage
+    clearWebpage();
+
+    // show the login and register form
+    showLoginAndRegForm();
+
+    // create and show the error message on the form
+    createAndShowFormInvalidMsg('sorry an error occured');
   }
 };
 
