@@ -153,12 +153,14 @@ export default function games(db) {
       gamesUsersData.push({
         GameId: game.id,
         UserId: loggedInUserId,
+        playerNum: 1,
       });
 
       // add the random users's data for GameUsers table
       gamesUsersData.push({
         GameId: game.id,
         UserId: randomUserId,
+        playerNum: 2,
       });
 
       // create entries in the GamesUsers table
@@ -183,14 +185,29 @@ export default function games(db) {
       // get the game by the ID passed in the request
       const game = await db.Game.findByPk(request.params.id);
 
+      // get the userIds and playerIds of the game
+      const gameUsers = await db.GamesUser.findAll({
+        where: {
+          GameId: request.params.id,
+        },
+        order: [
+          // order by player number in ascending order
+          ['playerNum', 'ASC'],
+        ],
+      });
+
+      console.log('gameUsers are:', gameUsers);
+
+      // save the players card and players number in an object
+      const playerNumAndCards = {};
       // make changes to the object
-      const playerHand = [game.cards.deck.pop(), game.cards.deck.pop()];
+      // const playerHand = [game.cards.deck.pop(), game.cards.deck.pop()];
       const { deck } = game.cards;
 
       // update the game with the new info
       await game.update({
         cards: {
-          playerHand,
+          // playerHand,
           deck,
         },
       });

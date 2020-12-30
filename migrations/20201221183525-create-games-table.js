@@ -75,6 +75,9 @@ module.exports = {
           key: 'id',
         },
       },
+      playerNum: {
+        type: Sequelize.INTEGER,
+      },
       score: {
         type: Sequelize.INTEGER,
         defaultValue: 0,

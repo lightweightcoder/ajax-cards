@@ -48,6 +48,9 @@ const gameDisplayHeaderCol = document.getElementById('game-display-header');
 // players cards container
 const player1CardsDiv = document.getElementById('player1-cards-div');
 const player2CardsDiv = document.getElementById('player2-cards-div');
+// containers to store the card info
+const player1CardsInfoDiv = document.createElement('div');
+const player2CardsInfoDiv = document.createElement('div');
 
 // Functions ========================================================================
 const clearWebpage = () => {
@@ -123,6 +126,7 @@ const dealCards = function () {
     });
 };
 
+// create a game and deal a card to each player
 const createGame = function () {
   // Make a request to create a new game
   axios.post('/games')
