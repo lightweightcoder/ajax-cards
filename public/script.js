@@ -118,7 +118,7 @@ const dealCards = function () {
       currentGame = response.data;
 
       // display it to the user
-      runGame(currentGame);
+      // runGame(currentGame);
     })
     .catch((error) => {
       // handle error

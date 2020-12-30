@@ -181,6 +181,7 @@ export default function games(db) {
 
   // deal two new cards from the deck.
   const deal = async (request, response) => {
+    console.log('in gamescontroller.deal');
     try {
       // get the game by the ID passed in the request
       const game = await db.Game.findByPk(request.params.id);
@@ -198,29 +199,92 @@ export default function games(db) {
 
       console.log('gameUsers are:', gameUsers);
 
-      // save the players card and players number in an object
-      const playerNumAndCards = {};
-      // make changes to the object
-      // const playerHand = [game.cards.deck.pop(), game.cards.deck.pop()];
+      // set the players card and players number in an array of objects
+      // to pass into response
+      const playerNumAndCards = [];
+      const player1NumAndCards = {
+        playerNum: 1,
+        card: game.cards.deck.pop(),
+      };
+      const player2NumAndCards = {
+        playerNum: 2,
+        card: game.cards.deck.pop(),
+      };
+      playerNumAndCards.push(player1NumAndCards);
+      playerNumAndCards.push(player2NumAndCards);
+      console.log('playerNumAndCards is', playerNumAndCards);
+
+      // find out with player has the higher card or draw
+      const player1CardRank = player1NumAndCards.card.rank;
+      const player2CardRank = player2NumAndCards.card.rank;
+      let winnerPlayerNum = 'draw';
+      if (player1CardRank > player2CardRank) {
+        winnerPlayerNum = 1;
+      } else if (player1CardRank < player2CardRank) {
+        winnerPlayerNum = 2;
+      }
+
+      // update GamesUsers table on the score if there is a winner
+      if (winnerPlayerNum !== 'draw') {
+        // find the previous score and userId of the winner
+        // this returns an array of GamesUser objects
+        const winner = gameUsers.filter((gameUser) => gameUser.playerNum === winnerPlayerNum);
+
+        console.log('winner is', winner);
+
+        const newScore = winner[0].score + 1;
+
+        await db.GamesUser.update({ score: newScore }, {
+          where: {
+            GameId: request.params.id,
+            UserId: winner[0].UserId,
+          },
+        });
+
+        console.log('done with updating gamesUserTable score');
+      }
+
+      // // make changes to the object
+      // // const playerHand = [game.cards.deck.pop(), game.cards.deck.pop()];
       const { deck } = game.cards;
 
       // update the game with the new info
-      await game.update({
-        cards: {
+      // this doesnt seem to work
+      // await game.update({
+      //   cards: {
+      //     // playerHand,
+      //     deck,
+      //   },
+      // });
+      // but this works?
+      console.log('updating Games table');
+      await db.Game.update(
+        {
+          cards: {
           // playerHand,
-          deck,
+            deck,
+          },
         },
-      });
+        {
+          where: {
+            id: request.params.id,
+          },
+        },
+      );
+
+      console.log('deck is', deck);
 
       // send the updated game back to the user.
       // dont include the deck so the user can't cheat
       response.send({
         id: game.id,
-        cards: {
-          playerHand: game.cards.playerHand,
-        },
+        playerNumAndCards,
+        // cards: {
+        //   playerHand: game.cards.playerHand,
+        // },
       });
     } catch (error) {
+      console.log('deal fn error:', error);
       response.status(500).send(error);
     }
   };
