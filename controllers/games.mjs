@@ -248,6 +248,7 @@ export default function games(db) {
       // // const playerHand = [game.cards.deck.pop(), game.cards.deck.pop()];
       const { deck } = game.cards;
 
+      console.log('1st updating Games table');
       // update the game with the new info
       // this doesnt seem to work, does not run any query
       await game.update(
@@ -259,20 +260,20 @@ export default function games(db) {
         },
       );
       // but this works
-      console.log('updating Games table');
-      await db.Game.update(
-        {
-          cards: {
-          // playerHand,
-            deck,
-          },
-        },
-        {
-          where: {
-            id: request.params.id,
-          },
-        },
-      );
+      console.log('2nd updating Games table');
+      // await db.Game.update(
+      //   {
+      //     cards: {
+      //     // playerHand,
+      //       deck,
+      //     },
+      //   },
+      //   {
+      //     where: {
+      //       id: request.params.id,
+      //     },
+      //   },
+      // );
 
       console.log('deck is', deck);
 
