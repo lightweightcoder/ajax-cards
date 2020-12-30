@@ -249,14 +249,16 @@ export default function games(db) {
       const { deck } = game.cards;
 
       // update the game with the new info
-      // this doesnt seem to work
-      // await game.update({
-      //   cards: {
-      //     // playerHand,
-      //     deck,
-      //   },
-      // });
-      // but this works?
+      // this doesnt seem to work, does not run any query
+      await game.update(
+        {
+          cards: {
+          // playerHand,
+            deck,
+          },
+        },
+      );
+      // but this works
       console.log('updating Games table');
       await db.Game.update(
         {
