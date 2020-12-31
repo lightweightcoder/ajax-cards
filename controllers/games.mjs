@@ -137,11 +137,14 @@ export default function games(db) {
       // set players ids for new game
       // const playersIds = [loggedInUserId, randomUserId];
 
+      // const newGame = {
+      //   cards: {
+      //     // playerHand: [deck.pop(), deck.pop()],
+      //     deck,
+      //   },
+      // };
       const newGame = {
-        cards: {
-          // playerHand: [deck.pop(), deck.pop()],
-          deck,
-        },
+        cards: deck,
       };
 
       // run the DB INSERT query to create a new game
@@ -199,16 +202,17 @@ export default function games(db) {
 
       console.log('gameUsers are:', gameUsers);
 
+      console.log('deck length before pop', game.cards.length);
       // set the players card and players number in an array of objects
       // to pass into response
       const playerNumAndCards = [];
       const player1NumAndCards = {
         playerNum: 1,
-        card: game.cards.deck.pop(),
+        card: game.cards.pop(),
       };
       const player2NumAndCards = {
         playerNum: 2,
-        card: game.cards.deck.pop(),
+        card: game.cards.pop(),
       };
       playerNumAndCards.push(player1NumAndCards);
       playerNumAndCards.push(player2NumAndCards);
@@ -258,20 +262,28 @@ export default function games(db) {
 
       // // make changes to the object
       // // const playerHand = [game.cards.deck.pop(), game.cards.deck.pop()];
-      const { deck } = game.cards;
+      // const { deck } = game.cards;
+      const deck = game.cards;
 
       console.log('1st updating Games table');
       // update the game with the new info
       // this doesnt seem to work, does not run any query
-      await game.update(
+      console.log('game deck length is', game.cards.length);
+      const updatedGame = await game.update(
         {
-          cards: {
-          // playerHand,
-            deck,
-          },
+          cards: [...deck],
         },
       );
+      // const updatedGame = await game.update(
+      //   {
+      //     cards: {
+      //     // playerHand,
+      //       deck,
+      //     },
+      //   },
+      // );
       // but this works
+      console.log('updatedGame deck length is', updatedGame.cards.length);
       console.log('2nd updating Games table');
       // await db.Game.update(
       //   {
