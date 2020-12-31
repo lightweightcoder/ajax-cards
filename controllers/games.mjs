@@ -234,6 +234,7 @@ export default function games(db) {
 
         const newScore = winner[0].score + 1;
 
+        // update the score of the winner for that round
         await db.GamesUser.update({ score: newScore }, {
           where: {
             GameId: request.params.id,
@@ -242,6 +243,17 @@ export default function games(db) {
         });
 
         console.log('done with updating gamesUserTable score');
+
+        // if the score is 2, update Games table WinnerId with the userId who got the score
+        if (newScore === 2) {
+          await db.Game.update({ WinnerId: winner[0].UserId }, {
+            where: {
+              id: request.params.id,
+            },
+          });
+
+          console.log('done updating games table with WinnerId');
+        }
       }
 
       // // make changes to the object
